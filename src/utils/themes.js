@@ -6,7 +6,7 @@ export const getInitialTheme = () => {
     if (typeof preferedTheme === "string") {
       return preferedTheme;
     } else if (mediaQuery) {
-      console.log("first");
+      // console.log("first");
       return "dark";
     }
   } else {

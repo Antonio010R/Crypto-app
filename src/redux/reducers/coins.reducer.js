@@ -29,4 +29,8 @@ const coinSlice = createSlice({
 
 export const { setCoinListStart, setCoinListSuccess, setCoinListFailed } =
   coinSlice.actions;
+
+export const selectCoinsList = (state) => state.coins.coinList;
+export const selectCoinsIsLoading = (state) => state.coins.isLoading;
+export const selectCoinsError = (state) => state.coins.error;
 export default coinSlice.reducer;

@@ -19,7 +19,7 @@ const ThemeButton = () => {
       e.target.classList.add("dark-mode");
       dispatch(setDarkTheme());
     }
-    console.log(e.target.classList);
+    // console.log(e.target.classList);
   };
 
   return (

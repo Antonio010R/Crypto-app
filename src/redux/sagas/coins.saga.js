@@ -10,7 +10,7 @@ export function* fetchCoinList() {
     const data = request.data;
     yield put({ type: "coins/setCoinListSuccess", payload: data });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     yield put({ type: "coins/setCoinListFailed", payload: error });
   }
 }
