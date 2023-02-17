@@ -2,12 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+*,
+*::after,
+*::before{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 :root {
   @apply bg-primary text-primary;
 }
 
 .rounded-div {
-  @apply border border-secondary rounded-2xl shadow-xl bg-primary px-2 max-w-[1140px] w-full mx-auto;
+  @apply border border-secondary rounded-2xl shadow-xl bg-primary px-6 max-w-[1440px] w-full mx-auto;
 }
 
 .dark {
@@ -28,4 +36,64 @@
   --color-text-accent: #2b6cb0;
   --color-bg-input: #edf2f7;
   --color-bg-button: #2b6cb0;
+}
+
+/* theme button style */
+.switch {
+  cursor: poin;
+  width: 80px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: rgb(39, 38, 38);
+  border: 0.5px solid rgb(39, 38, 38);
+  position: relative;
+}
+.flicker {
+  pointer-events: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: white;
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  transition: 0.3s;
+  box-shadow: inset 4px 4px 4px white,
+    inset -4px -4px 4px rgb(195 193 198 / 90%);
+}
+.dark-mode {
+  background-color: rgb(57, 57, 57);
+  border: 0.5px solid white;
+  transition: 0.3s;
+}
+
+.sun {
+  pointer-events: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  border-color: black;
+  color: white;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+.moon {
+  pointer-events: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 10px;
+  border-color: black;
+  color: white;
+  position: absolute;
+  top: 7px;
+  right: 5px;
+  transform: rotate(260deg);
+}
+
+.dark-mode > * {
+  color: white;
+}
+.dark-mode .flicker {
+  transform: translateX(40px);
 }

@@ -1,12 +1,13 @@
 import "./App.css";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+
+import { Navbar } from "./components";
+
 import {
   selectTheme,
   setTheme,
-  setLightTheme,
-  setDarkTheme,
 } from "./redux/reducers/themes.reducer";
-import { useEffect } from "react";
 import { getInitialTheme } from "./utils/themes";
 
 function App() {
@@ -15,20 +16,12 @@ function App() {
   const isTheme = getTheme ? getTheme : getInitialTheme();
 
   useEffect(() => {
-    console.log("hello");
     dispatch(setTheme(isTheme));
-  }, [isTheme]);
+  }, [isTheme, dispatch]);
 
   return (
-    <div className="bg-primary h-screen text-lg">
-      {isTheme}Hello
-      <button
-        onClick={() => {
-          dispatch(setDarkTheme());
-        }}
-      >
-        click
-      </button>
+    <div className="">
+      <Navbar />
     </div>
   );
 }
