@@ -11,7 +11,7 @@ const coinSlice = createSlice({
   initialState,
   reducers: {
     setCoinListStart: (state, action) => {
-      console.log("going to sagas");
+      // console.log("going to sagas");
       state.isLoading = true;
     },
     setCoinListSuccess: (state, action) => {

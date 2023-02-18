@@ -1,10 +1,11 @@
 import React from "react";
-import { CoinSearch } from "../components";
+import { CoinSearch, Trending } from "../components";
 
 const Home = ({ coins }) => {
   return (
     <div>
       <CoinSearch coins={coins} />
+      <Trending/>
     </div>
   );
 };

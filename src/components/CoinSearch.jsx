@@ -11,7 +11,7 @@ const CoinSearch = ({ coins }) => {
 
   return (
     <div className="rounded-div my-4">
-      {console.log(coins)}
+      {/* {console.log(coins)} */}
       <div className="flex flex-col justify-between pt-4 pb-6 text-center md:text-right md:flex-row ">
         <h1 className="text-2xl my-2 font-bold ">Search Crypto</h1>
         <form>
