@@ -15,10 +15,27 @@ export function* fetchCoinList() {
   }
 }
 
+export function* fetchCoinDetails({ payload }) {
+  // console.log(payload);
+  const url =
+    yield `https://api.coingecko.com/api/v3/coins/${payload}?localization=false&sparkline=true`;
+  try {
+    const request = yield call(axios.get, url);
+    const data = yield request.data;
+    yield put({ type: "coins/setCoinDetailsSuccess", payload: data });
+  } catch (error) {
+    yield put({ type: "coins/setCoinDetailsFailed", payload: error });
+  }
+}
+
 export function* onSetCoinStart() {
   yield takeLatest("coins/setCoinListStart", fetchCoinList);
 }
 
+export function* onSetCoinDetailsStart() {
+  yield takeLatest("coins/setCoinDetailsStart", fetchCoinDetails);
+}
+
 export function* coinSagas() {
-  yield all([call(onSetCoinStart)]);
+  yield all([call(onSetCoinStart), call(onSetCoinDetailsStart)]);
 }

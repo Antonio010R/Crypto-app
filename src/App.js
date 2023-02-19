@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { Navbar } from "./components";
-import { Account, Home, SignIn, SignUp } from "./routes";
+import { Account, CoinPage, Home, SignIn, SignUp } from "./routes";
 
 import { selectTheme, setTheme } from "./redux/reducers/themes.reducer";
 import { getInitialTheme } from "./utils/themes";
@@ -19,7 +19,6 @@ function App() {
   const getTheme = useSelector(selectTheme);
   const isTheme = getTheme ? getTheme : getInitialTheme();
   const getCoins = useSelector(selectCoinsList);
-
 
   useEffect(() => {
     dispatch(setTheme(isTheme));
@@ -37,6 +36,9 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/coin/:coinId" element={<CoinPage />}>
+          <Route path=":coinId" />
+        </Route>
       </Routes>
     </Fragment>
   );

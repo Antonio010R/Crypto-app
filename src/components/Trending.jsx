@@ -19,7 +19,10 @@ const Trending = () => {
       {/* {console.log(getTrending)} */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {getTrending.map((coin) => (
-          <div className="rounded-div p-4 flex justify-between transition-all hover:scale-105 ease-in-out duration-300">
+          <div
+            key={coin.item.id}
+            className="rounded-div p-4 flex justify-between transition-all hover:scale-105 ease-in-out duration-300"
+          >
             <div className="w-full flex items-center justify-between">
               <div className="flex gap-3">
                 <img
