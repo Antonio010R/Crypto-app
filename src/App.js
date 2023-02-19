@@ -15,7 +15,6 @@ import {
 
 function App() {
   const dispatch = useDispatch();
-  // const [coins, setCoins] = useState([]);
   const getTheme = useSelector(selectTheme);
   const isTheme = getTheme ? getTheme : getInitialTheme();
   const getCoins = useSelector(selectCoinsList);
