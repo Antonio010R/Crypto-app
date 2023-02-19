@@ -1,8 +1,8 @@
 import "./App.css";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { Navbar } from "./components";
+import { Footer, Navbar } from "./components";
 import { Account, CoinPage, Home, SignIn, SignUp } from "./routes";
 
 import { selectTheme, setTheme } from "./redux/reducers/themes.reducer";
@@ -39,6 +39,7 @@ function App() {
           <Route path=":coinId" />
         </Route>
       </Routes>
+      <Footer />
     </Fragment>
   );
 }

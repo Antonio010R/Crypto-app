@@ -3,7 +3,7 @@ import { Audio, FidgetSpinner, MagnifyingGlass } from "react-loader-spinner";
 
 const Loader = () => {
   return (
-    <div className="h-screen w-screen bg-white flex items-center justify-center">
+    <div className="bg-primary h-screen w-screen flex items-center justify-center">
       <MagnifyingGlass
         visible={true}
         height="160"
