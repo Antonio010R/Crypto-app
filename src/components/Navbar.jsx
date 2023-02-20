@@ -47,7 +47,7 @@ const Navbar = () => {
       </div>
 
       <div
-        className={`fixed top-20  h-[90vh] flex flex-col items-center justify-between w-full ease-in duration-300 ${
+        className={`fixed top-20 bg-primary h-[90vh] flex flex-col items-center justify-between w-full ease-in duration-300 ${
           nav ? "md:hidden left-0 translate-x-0  z-10" : "translate-x-[100%]  "
         } `}
       >
