@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   FaInstagram,
   FaTiktok,
-  FaSkype,
+  FaTwitter,
   FaFacebook,
   FaGithub,
 } from "react-icons/fa";
@@ -16,7 +16,7 @@ const Footer = () => {
   }, []);
   return (
     <div className="rounded-div px-10 py-10 ">
-      <div className="max-w-lg mx-auto flex flex-col gap-5">
+      <div className="max-w-lg mx-auto text-primary flex flex-col gap-5">
         <div className="flex flex-col items-center text-center justify-between gap-6 md:gap-10 md:flex-row ">
           <div className="flex flex-col gap-2">
             <div className="text-base font-semibold cursor-pointer">
@@ -40,10 +40,10 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        <div className="flex items-center justify-center gap-10  md:gap-0 md:justify-around md:px-20">
+        <div className="flex items-center text-accent justify-center gap-10  md:gap-0 md:justify-around md:px-20">
           <FaInstagram className="w-6 h-6 cursor-pointer" />
           <FaTiktok className="w-6 h-6 cursor-pointer" />
-          <FaSkype className="w-6 h-6 cursor-pointer" />
+          <FaTwitter className="w-6 h-6 cursor-pointer" />
           <FaFacebook className="w-6 h-6 cursor-pointer" />
           <FaGithub className="w-6 h-6 cursor-pointer" />
         </div>
