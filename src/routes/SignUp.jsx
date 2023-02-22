@@ -1,19 +1,44 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AiFillLock, AiOutlineMail } from "react-icons/ai";
 import Google from "../assets/google.png";
 import Facebook from "../assets/facebook.png";
+import { useDispatch } from "react-redux";
+import { setEmailSignUpStart } from "../redux/reducers/user.reducer";
 
 const SignUp = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const onChangeHandlerEmail = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const onChangeHandlerPassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const onSubmitSignUpHandler = (e) => {
+    e.preventDefault();
+    if (email && password) {
+      dispatch(setEmailSignUpStart({ email, password }));
+    }
+  };
+
   return (
     <div className="flex flex-col max-w-[400px] mx-auto min-h-[600px] px-4 py-12">
       <h2 className="text-2xl font-bold">Sign Up</h2>
-      <form>
+
+      <form onSubmit={onSubmitSignUpHandler}>
         <div className="my-4">
           <label>Email</label>
 
           <div className="my-2 w-full relative rounded-2xl shadow-xl">
             <input
+              onChange={onChangeHandlerEmail}
               className="w-full p-2 bg-primary border border-input rounded-lg "
               type="email"
             />
@@ -24,6 +49,7 @@ const SignUp = () => {
           <label>Password</label>
           <div className="my-2 w-full relative rounded-2xl shadow-xl">
             <input
+              onChange={onChangeHandlerPassword}
               className="w-full p-2 bg-primary border border-input rounded-lg "
               type="password"
             />

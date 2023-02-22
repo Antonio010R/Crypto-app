@@ -10,17 +10,17 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setSignUpStart: (state, action) => {
+    setEmailSignUpStart: (state, action) => {
       state.isLoading = true;
       state.error = null;
       state.userAuth = null;
     },
-    setSignUpSuccess: (state, action) => {
+    setEmailSignUpSuccess: (state, action) => {
       state.userAuth = action.payload;
       state.isLoading = false;
       state.error = null;
     },
-    setSignUpFailed: (state, action) => {
+    setEmailSignUpFailed: (state, action) => {
       state.userAuth = null;
       state.isLoading = false;
       state.error = action.payload;
@@ -28,7 +28,10 @@ const userSlice = createSlice({
   },
 });
 
-export const { setSignUpStart, setSignUpSuccess, setSignUpFailed } =
-  userSlice.actions;
+export const {
+  setEmailSignUpStart,
+  setEmailSignUpSuccess,
+  setEmailSignUpFailed,
+} = userSlice.actions;
 
 export default userSlice.reducer;
