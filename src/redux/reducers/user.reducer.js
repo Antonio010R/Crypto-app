@@ -25,6 +25,36 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    setEmailSignInStart: (state, action) => {
+      state.isLoading = true;
+      state.error = null;
+      state.userAuth = null;
+    },
+    setEmailSignInSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      state.userAuth = null;
+    },
+    setEmailSignInFailed: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+      state.userAuth = null;
+    },
+    setSignOutStart: (state, action) => {
+      state.isLoading = true;
+      state.error = null;
+      state.userAuth = null;
+    },
+    setSignOutSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      state.userAuth = null;
+    },
+    setSignOutFailed: (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      state.userAuth = null;
+    },
   },
 });
 
@@ -32,6 +62,12 @@ export const {
   setEmailSignUpStart,
   setEmailSignUpSuccess,
   setEmailSignUpFailed,
+  setEmailSignInStart,
+  setEmailSignInSuccess,
+  setEmailSignInFailed,
+  setSignOutStart,
+  setSignOutSuccess,
+  setSignOutFailed,
 } = userSlice.actions;
 
 export default userSlice.reducer;
