@@ -12,6 +12,7 @@ import {
   selectCoinsList,
   setCoinListStart,
 } from "./redux/reducers/coins.reducer";
+import { checkAuthStateChangeStart } from "./redux/reducers/user.reducer";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ function App() {
 
   useEffect(() => {
     dispatch(setCoinListStart());
+    dispatch(checkAuthStateChangeStart());
   }, []);
 
   return (

@@ -6,9 +6,9 @@ import Loader from "../utils/Loader";
 import { Fragment } from "react";
 
 const Home = ({ coins }) => {
-  const isCoinLoading = useSelector(selectCoinsIsLoading);
-  
-  const isLoading = isCoinLoading;
+  const isLoading = useSelector(selectCoinsIsLoading);
+
+  // const isLoading = isCoinLoading;
 
   return (
     <Fragment>

@@ -23,8 +23,8 @@ const ThemeButton = () => {
   };
 
   return (
-    <div className="flex items-center justify-between">
-        <span className="md:hidden capitalize">{isTheme} mode</span>
+    <div className="flex items-center justify-between cursor-pointer">
+      <span className="md:hidden capitalize">{isTheme} mode</span>
       <div className="md:m-1 md:p-1 ">
         <div
           onClick={onClickHandler}
