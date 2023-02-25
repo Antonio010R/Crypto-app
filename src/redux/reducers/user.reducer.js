@@ -11,6 +11,8 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    //sign in with email and password
+
     setEmailSignUpStart: (state, action) => {
       state.userCredential = null;
       state.isLoading = true;
@@ -29,6 +31,9 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+
+    //sign in with email and password
+
     setEmailSignInStart: (state, action) => {
       state.isLoading = true;
       state.error = null;
@@ -47,6 +52,53 @@ const userSlice = createSlice({
       state.userAuth = null;
       state.userCredential = null;
     },
+
+    // google sign up
+
+    setGoogleSignUpStart: (state, action) => {
+      state.isLoading = true;
+      state.error = null;
+      state.userAuth = null;
+      state.userCredential = null;
+    },
+    setGoogleSignUpSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      state.userAuth = action.payload.userAuth;
+      state.userCredential = action.payload.userCredential;
+    },
+    setGoogleSignUpFailed: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+      state.userAuth = null;
+      state.userCredential = null;
+    },
+
+    //google sign in
+    setGoogleSignInStart: (state, action) => {
+      state.isLoading = true;
+      state.error = null;
+      state.userAuth = null;
+      state.userCredential = null;
+    },
+    setGoogleSignInSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      state.userAuth = action.payload.userAuth;
+      state.userCredential = action.payload.userCredential;
+    },
+    setGoogleSignInFailed: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+      state.userAuth = null;
+      state.userCredential = null;
+    },
+    //facebook sign up
+
+    //facebook sign in
+
+    //sign out
+
     setSignOutStart: (state, action) => {
       state.isLoading = true;
       state.error = null;
@@ -65,6 +117,9 @@ const userSlice = createSlice({
       state.userAuth = null;
       state.userCredential = null;
     },
+
+    //getting current user logged in
+
     checkAuthStateChangeStart: (state, action) => {
       state.isLoading = true;
       state.error = null;
@@ -93,6 +148,12 @@ export const {
   setEmailSignInStart,
   setEmailSignInSuccess,
   setEmailSignInFailed,
+  setGoogleSignUpStart,
+  setGoogleSignUpSuccess,
+  setGoogleSignUpFailed,
+  setGoogleSignInStart,
+  setGoogleSignInSuccess,
+  setGoogleSignInFailed,
   setSignOutStart,
   setSignOutSuccess,
   setSignOutFailed,

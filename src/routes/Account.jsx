@@ -1,10 +1,14 @@
 import React from "react";
 import { SavedCoinList } from "../components";
-import { useDispatch } from "react-redux";
-import { setSignOutStart } from "../redux/reducers/user.reducer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectUserCredentials,
+  setSignOutStart,
+} from "../redux/reducers/user.reducer";
 
 const Account = () => {
   const dispatch = useDispatch();
+  const userCredential = useSelector(selectUserCredentials);
   const onClickSignOutHandler = () => {
     dispatch(setSignOutStart());
   };

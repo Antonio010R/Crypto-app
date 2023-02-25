@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AiFillEye, AiFillEyeInvisible, AiOutlineMail } from "react-icons/ai";
+import {
+  AiFillEye,
+  AiFillEyeInvisible,
+  AiFillLock,
+  AiOutlineMail,
+} from "react-icons/ai";
 import Google from "../assets/google.png";
 import Facebook from "../assets/facebook.png";
 import { useDispatch } from "react-redux";
-import { setEmailSignUpStart } from "../redux/reducers/user.reducer";
+import {
+  setEmailSignUpStart,
+  setGoogleSignUpStart,
+} from "../redux/reducers/user.reducer";
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -12,6 +20,7 @@ const SignUp = () => {
   const [view, setView] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
   const [error, setError] = useState("");
 
   const onChangeHandlerEmail = (e) => {
@@ -22,15 +31,25 @@ const SignUp = () => {
     setPassword(e.target.value);
   };
 
+  const onChangeHandlerRePassword = (e) => {
+    setRePassword(e.target.value);
+  };
+
   const onSubmitSignUpHandler = (e) => {
     e.preventDefault();
-    if (email && password) {
+    if (email && password && password === rePassword) {
       dispatch(setEmailSignUpStart({ email, password }));
       navigate("/");
+    } else {
+      setError("*passwords are not the same");
     }
   };
   const onClickHandlerView = () => {
     setView(!view);
+  };
+
+  const onClickGoogleSignUp = () => {
+    dispatch(setGoogleSignUpStart());
   };
 
   return (
@@ -51,13 +70,14 @@ const SignUp = () => {
           </div>
         </div>
         <div className="my-4">
-          <label>Password</label>
+          <label>Set Password</label>
           <div className="my-2 w-full relative rounded-2xl shadow-xl">
             <input
               onChange={onChangeHandlerPassword}
               className="w-full p-2 bg-primary border border-input rounded-lg "
               type={`${view ? "text" : "password"}`}
             />
+
             {view ? (
               <AiFillEyeInvisible
                 onClick={onClickHandlerView}
@@ -71,7 +91,28 @@ const SignUp = () => {
             )}
           </div>
         </div>
-        <button className="w-full my-2 p-3 bg-button text-btnText rounded-lg shadow-xl">
+        <div className="my-4">
+          <label>Re-enter Password</label>
+          <div className="relative">
+            <div className="my-2 w-full relative rounded-2xl shadow-xl">
+              <input
+                onChange={onChangeHandlerRePassword}
+                className="w-full p-2 bg-primary border border-input rounded-lg "
+                type={`${view ? "text" : "password"}`}
+              />
+
+              <AiFillLock className="cursor-pointer absolute text-slate-500 right-2 top-3 " />
+            </div>
+            {error ? (
+              <p className="absolute text-xs text-red-500 left-1 top-11">
+                {error}
+              </p>
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
+        <button className="w-full mb-2 mt-3 p-3 bg-button text-btnText rounded-lg shadow-xl">
           Sign Up
         </button>
       </form>
@@ -79,12 +120,15 @@ const SignUp = () => {
       <div className="flex flex-col items-center pt-5 border-t mt-7 border-slate-400">
         <p className="text-sm text-slate-400">or sign up with</p>
         <div className="flex mt-5 flex-col w-full items-center justify-between gap-3 md:flex-row">
-          <button className="w-full flex  items-center justify-center gap-10 border border-slate-400 px-7 py-3 md:w-1/2 md:gap-4 rounded-lg shadow-xl">
-            <img src={Google} alt="img/google" className="w-10 h-10" />
+          <button
+            onClick={onClickGoogleSignUp}
+            className="w-full flex  items-center justify-center gap-10 border border-slate-400 px-7 py-3 md:w-1/2 md:gap-4 rounded-lg shadow-xl"
+          >
+            <img src={Google} alt="img/google" className="w-8 h-8" />
             Google
           </button>
           <button className="w-full flex items-center justify-center gap-8 border border-slate-400 px-7 py-2 md:w-1/2  md:gap-4 rounded-lg shadow-xl ">
-            <img src={Facebook} alt="img/google" className="w-12 h-12" />
+            <img src={Facebook} alt="img/google" className="w-10 h-10" />
             Facebook
           </button>
         </div>

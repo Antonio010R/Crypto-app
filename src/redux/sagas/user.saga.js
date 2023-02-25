@@ -2,9 +2,15 @@ import { takeLatest, all, call, put } from "redux-saga/effects";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
 } from "firebase/auth";
-import { auth, db, getIsUserAuthenticated } from "../../firebase/firebase";
+import {
+  auth,
+  db,
+  getIsUserAuthenticated,
+  googleProvider,
+} from "../../firebase/firebase";
 
 import { doc, setDoc } from "firebase/firestore";
 
@@ -48,6 +54,36 @@ export function* fetchEmailSignIn({ payload: { email, password } }) {
   }
 }
 
+export function* fetchGoogleSignUp() {
+  try {
+    const userCredential = yield call(signInWithPopup, auth, googleProvider);
+    const userAuth = yield userCredential.user.uid;
+    const email = yield userCredential.user.email;
+    const userObj = { email, userAuth, watchlist: [] };
+    const createDoc = yield call(doc, db, "userList", userAuth);
+    yield call(setDoc, createDoc, userObj);
+    yield put({
+      type: "user/setGoogleSignUpSuccess",
+      payload: { userCredential, userAuth },
+    });
+  } catch (error) {
+    yield put({ type: "user/setGoogleSignUpFailed", payload: error });
+  }
+}
+
+export function* fetchGoogleSignIn() {
+  try {
+    const userCredential = yield call(signInWithPopup, auth, googleProvider);
+    const userAuth = yield userCredential.user.uid;
+    yield put({
+      type: "user/setGoogleSignInSuccess",
+      payload: { userCredential, userAuth },
+    });
+  } catch (error) {
+    yield put({ type: "user/setGoogleSignInFailed", payload: error });
+  }
+}
+
 export function* fetchSignOutStart() {
   try {
     yield console.log("auth", auth);
@@ -77,7 +113,10 @@ export function* fetchCheckAuthStateChangeStart() {
       payload: { userCredential, userAuth },
     });
   } catch (error) {
-    yield put({ type: "user/checkAuthStateChangeFailed", payload: error });
+    yield put({
+      type: "user/checkAuthStateChangeFailed",
+      payload: "No user signed in",
+    });
   }
 }
 
@@ -87,6 +126,14 @@ export function* onSetEmailSignUpStart() {
 
 export function* onSetEmailSignInStart() {
   yield takeLatest("user/setEmailSignInStart", fetchEmailSignIn);
+}
+
+export function* onSetGoogleSignUp() {
+  yield takeLatest("user/setGoogleSignUpStart", fetchGoogleSignUp);
+}
+
+export function* onSetGoogleSignIn() {
+  yield takeLatest("user/setGoogleSignInStart", fetchGoogleSignIn);
 }
 
 export function* onSetSignOutStart() {
@@ -106,5 +153,7 @@ export function* userSagas() {
     call(onSetEmailSignInStart),
     call(onSetSignOutStart),
     call(onCheckAuthStateChangeStart),
+    call(onSetGoogleSignUp),
+    call(onSetGoogleSignIn),
   ]);
 }
