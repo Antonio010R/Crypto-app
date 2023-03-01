@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import {
   AiFillEye,
   AiFillEyeInvisible,
@@ -8,23 +8,27 @@ import {
 } from "react-icons/ai";
 import Google from "../assets/google.png";
 import Facebook from "../assets/facebook.png";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
+  selectUserCredentials,
+  selectUserError,
+  setEmailSignUpFailed,
   setEmailSignUpStart,
   setGoogleSignUpStart,
 } from "../redux/reducers/user.reducer";
 
 const SignUp = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [view, setView] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [rePassword, setRePassword] = useState("");
-  const [error, setError] = useState("");
+  const [view, setView] = useState(false); //toggle view for password
+  const [email, setEmail] = useState(""); //state for email
+  const [password, setPassword] = useState(""); //state for password
+  const [rePassword, setRePassword] = useState(""); //state for re-enter password
+  const errorCode = useSelector(selectUserError)?.code; //error code from store
+  const userCredential = useSelector(selectUserCredentials);
+  let error = ""; //error message display message
 
   const onChangeHandlerEmail = (e) => {
-    setEmail(e.target.value);
+    setTimeout(() => setEmail(e.target.value), 1500);
   };
 
   const onChangeHandlerPassword = (e) => {
@@ -39,11 +43,11 @@ const SignUp = () => {
     e.preventDefault();
     if (email && password && password === rePassword) {
       dispatch(setEmailSignUpStart({ email, password }));
-      navigate("/");
     } else {
-      setError("*passwords are not the same");
+      dispatch(setEmailSignUpFailed({ code: "auth/password-not-same" }));
     }
   };
+
   const onClickHandlerView = () => {
     setView(!view);
   };
@@ -52,95 +56,107 @@ const SignUp = () => {
     dispatch(setGoogleSignUpStart());
   };
 
-  return (
-    <div className="flex flex-col max-w-[400px] mx-auto min-h-[600px] px-4 py-12">
-      <h2 className="text-2xl font-bold">Sign Up</h2>
+  if (errorCode === "auth/email-already-in-use") {
+    error = "*Email already in use";
+  } else if (errorCode === "auth/password-not-same") {
+    error = "*Password not same";
+  }
 
-      <form onSubmit={onSubmitSignUpHandler}>
-        <div className="my-4">
-          <label>Email</label>
+  console.log(errorCode);
 
-          <div className="my-2 w-full relative rounded-2xl shadow-xl">
-            <input
-              onChange={onChangeHandlerEmail}
-              className="w-full p-2 bg-primary border border-input rounded-lg "
-              type="email"
-            />
-            <AiOutlineMail className="absolute text-slate-500 right-2 top-3 " />
-          </div>
-        </div>
-        <div className="my-4">
-          <label>Set Password</label>
-          <div className="my-2 w-full relative rounded-2xl shadow-xl">
-            <input
-              onChange={onChangeHandlerPassword}
-              className="w-full p-2 bg-primary border border-input rounded-lg "
-              type={`${view ? "text" : "password"}`}
-            />
+  if (userCredential) {
+    return <Navigate to="/" />;
+  } else {
+    return (
+      <div className="flex flex-col max-w-[400px] mx-auto min-h-[600px] px-4 py-12">
+        <h2 className="text-2xl font-bold">Sign Up</h2>
 
-            {view ? (
-              <AiFillEyeInvisible
-                onClick={onClickHandlerView}
-                className="cursor-pointer absolute text-slate-500 right-2 top-3 "
-              />
-            ) : (
-              <AiFillEye
-                onClick={onClickHandlerView}
-                className="cursor-pointer absolute text-slate-500 right-2 top-3 "
-              />
-            )}
-          </div>
-        </div>
-        <div className="my-4">
-          <label>Re-enter Password</label>
-          <div className="relative">
+        <form onSubmit={onSubmitSignUpHandler}>
+          <div className="my-4">
+            <label>Email</label>
+
             <div className="my-2 w-full relative rounded-2xl shadow-xl">
               <input
-                onChange={onChangeHandlerRePassword}
+                onChange={onChangeHandlerEmail}
+                className="w-full p-2 bg-primary border border-input rounded-lg "
+                type="email"
+              />
+              <AiOutlineMail className="absolute text-slate-500 right-2 top-3 " />
+            </div>
+          </div>
+          <div className="my-4">
+            <label>Set Password</label>
+            <div className="my-2 w-full relative rounded-2xl shadow-xl">
+              <input
+                onChange={onChangeHandlerPassword}
                 className="w-full p-2 bg-primary border border-input rounded-lg "
                 type={`${view ? "text" : "password"}`}
               />
 
-              <AiFillLock className="cursor-pointer absolute text-slate-500 right-2 top-3 " />
+              {view ? (
+                <AiFillEyeInvisible
+                  onClick={onClickHandlerView}
+                  className="cursor-pointer absolute text-slate-500 right-2 top-3 "
+                />
+              ) : (
+                <AiFillEye
+                  onClick={onClickHandlerView}
+                  className="cursor-pointer absolute text-slate-500 right-2 top-3 "
+                />
+              )}
             </div>
-            {error ? (
-              <p className="absolute text-xs text-red-500 left-1 top-11">
-                {error}
-              </p>
-            ) : (
-              ""
-            )}
+          </div>
+          <div className="my-4">
+            <label>Re-enter Password</label>
+            <div className="relative">
+              <div className="my-2 w-full relative rounded-2xl shadow-xl">
+                <input
+                  onChange={onChangeHandlerRePassword}
+                  className="w-full p-2 bg-primary border border-input rounded-lg "
+                  type="password"
+                />
+
+                <AiFillLock className="cursor-pointer absolute text-slate-500 right-2 top-3 " />
+              </div>
+              {error ? (
+                <p className="absolute text-xs text-red-500 left-1 top-11">
+                  {error}
+                </p>
+              ) : (
+                ""
+              )}
+            </div>
+          </div>
+          <button className="w-full mb-2 mt-3 p-3 bg-button text-btnText rounded-lg shadow-xl">
+            Sign Up
+          </button>
+        </form>
+
+        <div className="flex flex-col items-center pt-5 border-t mt-7 border-slate-400">
+          <p className="text-sm text-slate-400">or sign up with</p>
+          <div className="flex mt-5 flex-col w-full items-center justify-between gap-3 md:flex-row">
+            <button
+              onClick={onClickGoogleSignUp}
+              className="w-full flex  items-center justify-center gap-10 border border-slate-400 px-7 py-3 md:w-1/2 md:gap-4 rounded-lg shadow-xl"
+            >
+              <img src={Google} alt="img/google" className="w-8 h-8" />
+              Google
+            </button>
+            <button className="w-full flex items-center justify-center gap-8 border border-slate-400 px-7 py-2 md:w-1/2  md:gap-4 rounded-lg shadow-xl ">
+              <img src={Facebook} alt="img/google" className="w-10 h-10" />
+              Facebook
+            </button>
           </div>
         </div>
-        <button className="w-full mb-2 mt-3 p-3 bg-button text-btnText rounded-lg shadow-xl">
-          Sign Up
-        </button>
-      </form>
-
-      <div className="flex flex-col items-center pt-5 border-t mt-7 border-slate-400">
-        <p className="text-sm text-slate-400">or sign up with</p>
-        <div className="flex mt-5 flex-col w-full items-center justify-between gap-3 md:flex-row">
-          <button
-            onClick={onClickGoogleSignUp}
-            className="w-full flex  items-center justify-center gap-10 border border-slate-400 px-7 py-3 md:w-1/2 md:gap-4 rounded-lg shadow-xl"
-          >
-            <img src={Google} alt="img/google" className="w-8 h-8" />
-            Google
-          </button>
-          <button className="w-full flex items-center justify-center gap-8 border border-slate-400 px-7 py-2 md:w-1/2  md:gap-4 rounded-lg shadow-xl ">
-            <img src={Facebook} alt="img/google" className="w-10 h-10" />
-            Facebook
-          </button>
-        </div>
+        <p className="my-4 mt-6">
+          Don't have an account ?{" "}
+          <Link className="text-accent" to="/signin">
+            Sign In
+          </Link>
+        </p>
       </div>
-      <p className="my-4 mt-6">
-        Don't have an account ?{" "}
-        <Link className="text-accent" to="/signin">
-          Sign In
-        </Link>
-      </p>
-    </div>
-  );
+    );
+  }
 };
 
 export default SignUp;
