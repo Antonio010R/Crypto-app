@@ -8,6 +8,7 @@ import {
   selectUserCredentials,
   selectUserError,
   setEmailSignInStart,
+  setEmailSignUpFailed,
   setFacebookSignInStart,
   setGoogleSignInStart,
 } from "../redux/reducers/user.reducer";
@@ -34,6 +35,8 @@ const SignIn = () => {
     if (email && password) {
       dispatch(setEmailSignInStart({ email, password }));
       // navigate("/");
+    } else if (!email && !password) {
+      dispatch(setEmailSignUpFailed({ code: "auth/no-email-pwd" }));
     }
   };
 
@@ -56,6 +59,8 @@ const SignIn = () => {
     error = "*Email already in use";
   } else if (errorCode === "auth/password-not-same") {
     error = "*Password not same";
+  } else if (errorCode === "auth/no-email-pwd") {
+    error = "*Enter the details";
   } else if (errorCode === "auth/user-not-found") {
     error = "*User does not exist";
   }

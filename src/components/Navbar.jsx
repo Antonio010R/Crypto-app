@@ -31,13 +31,22 @@ const Navbar = () => {
 
       <div className="flex items-center gap-4">
         {userCredential ? (
-          <div className="hidden md:block">
-            <button
-              onClick={onClickSignOutHandler}
-              className="bg-button text-btnText px-5 py-2 ml-2 rounded-lg shadow-lg md:shadow-xl"
-            >
-              Sign Out
-            </button>
+          <div className="flex gap-4">
+            <div className="hidden md:block">
+              <Link to="/account">
+                <button className=" text-primary px-7 py-2 ml-2 rounded-lg shadow-lg md:shadow-xl hover:bg-button hover:text-btnText duration-300 ">
+                  Account
+                </button>
+              </Link>
+            </div>
+            <div className="hidden md:block">
+              <button
+                onClick={onClickSignOutHandler}
+                className="bg-button text-btnText px-5 py-2 ml-2 rounded-lg shadow-lg md:shadow-xl"
+              >
+                Sign Out
+              </button>
+            </div>
           </div>
         ) : (
           <div className="hidden md:block">
@@ -76,11 +85,19 @@ const Navbar = () => {
       >
         <ul className="w-full p-4">
           <li className="border-b py-6 px-4">
-            <Link to="/">Home</Link>
+            <Link onClick={onClickCloseHamMenu} to="/">
+              Home
+            </Link>
           </li>
-          <li className="border-b py-6 px-4">
-            <Link to="/">Account</Link>
-          </li>
+          {userCredential ? (
+            <li className="border-b py-6 px-4">
+              <Link to="/account" onClick={onClickCloseHamMenu}>
+                Account
+              </Link>
+            </li>
+          ) : (
+            ""
+          )}
           <li className="border-b py-6 px-4">
             <ThemeButton />
           </li>

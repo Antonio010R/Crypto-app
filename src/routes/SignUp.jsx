@@ -44,6 +44,16 @@ const SignUp = () => {
     e.preventDefault();
     if (email && password && password === rePassword) {
       dispatch(setEmailSignUpStart({ email, password }));
+    } else if (!email && !password && !rePassword) {
+      dispatch(setEmailSignUpFailed({ code: "auth/no-email-pwd-repwd" }));
+    } else if (!email) {
+      dispatch(setEmailSignUpFailed({ code: "auth/no-email" }));
+    } else if (!password && !rePassword) {
+      dispatch(setEmailSignUpFailed({ code: "auth/no-pwd-repwd" }));
+    } else if (!password) {
+      dispatch(setEmailSignUpFailed({ code: "auth/no-pwd" }));
+    } else if (!rePassword) {
+      dispatch(setEmailSignUpFailed({ code: "auth/no-repwd" }));
     } else {
       dispatch(setEmailSignUpFailed({ code: "auth/password-not-same" }));
     }
@@ -67,6 +77,16 @@ const SignUp = () => {
     error = "*Password not same";
   } else if (errorCode === "auth/weak-password") {
     error = "*Password is weak";
+  } else if (errorCode === "auth/no-email-pwd") {
+    error = "*Enter the details";
+  } else if (errorCode === "auth/no-email") {
+    error = "*Enter email";
+  } else if (errorCode === "auth/no-pwd") {
+    error = "*Enter password";
+  } else if (errorCode === "auth/no-pwd-repwd") {
+    error = "*Enter password and confirmation password";
+  } else if (errorCode === "auth/no-repwd") {
+    error = "*Enter confirmation password";
   }
 
   console.log(errorCode);
