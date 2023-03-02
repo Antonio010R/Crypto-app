@@ -53,27 +53,6 @@ const userSlice = createSlice({
       state.userCredential = null;
     },
 
-    // google sign up
-
-    setGoogleSignUpStart: (state, action) => {
-      state.isLoading = true;
-      state.error = null;
-      state.userAuth = null;
-      state.userCredential = null;
-    },
-    setGoogleSignUpSuccess: (state, action) => {
-      state.isLoading = false;
-      state.error = null;
-      state.userAuth = action.payload.userAuth;
-      state.userCredential = action.payload.userCredential;
-    },
-    setGoogleSignUpFailed: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-      state.userAuth = null;
-      state.userCredential = null;
-    },
-
     //google sign in
     setGoogleSignInStart: (state, action) => {
       state.isLoading = true;
@@ -93,10 +72,26 @@ const userSlice = createSlice({
       state.userAuth = null;
       state.userCredential = null;
     },
-    //facebook sign up
 
     //facebook sign in
-
+    setFacebookSignInStart: (state, action) => {
+      state.isLoading = true;
+      state.error = null;
+      state.userAuth = null;
+      state.userCredential = null;
+    },
+    setFacebookSignInSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      state.userAuth = action.payload.userAuth;
+      state.userCredential = action.payload.userCredential;
+    },
+    setFacebookSignInFailed: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+      state.userAuth = null;
+      state.userCredential = null;
+    },
     //sign out
 
     setSignOutStart: (state, action) => {
@@ -148,12 +143,12 @@ export const {
   setEmailSignInStart,
   setEmailSignInSuccess,
   setEmailSignInFailed,
-  setGoogleSignUpStart,
-  setGoogleSignUpSuccess,
-  setGoogleSignUpFailed,
   setGoogleSignInStart,
   setGoogleSignInSuccess,
   setGoogleSignInFailed,
+  setFacebookSignInStart,
+  setFacebookSignInSuccess,
+  setFacebookSignInFailed,
   setSignOutStart,
   setSignOutSuccess,
   setSignOutFailed,

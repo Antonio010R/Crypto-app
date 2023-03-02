@@ -14,7 +14,8 @@ import {
   selectUserError,
   setEmailSignUpFailed,
   setEmailSignUpStart,
-  setGoogleSignUpStart,
+  setFacebookSignInStart,
+  setGoogleSignInStart,
 } from "../redux/reducers/user.reducer";
 
 const SignUp = () => {
@@ -53,13 +54,19 @@ const SignUp = () => {
   };
 
   const onClickGoogleSignUp = () => {
-    dispatch(setGoogleSignUpStart());
+    dispatch(setGoogleSignInStart());
+  };
+
+  const onClickFacebookSignUp = () => {
+    dispatch(setFacebookSignInStart());
   };
 
   if (errorCode === "auth/email-already-in-use") {
     error = "*Email already in use";
   } else if (errorCode === "auth/password-not-same") {
     error = "*Password not same";
+  } else if (errorCode === "auth/weak-password") {
+    error = "*Password is weak";
   }
 
   console.log(errorCode);
@@ -142,7 +149,10 @@ const SignUp = () => {
               <img src={Google} alt="img/google" className="w-8 h-8" />
               Google
             </button>
-            <button className="w-full flex items-center justify-center gap-8 border border-slate-400 px-7 py-2 md:w-1/2  md:gap-4 rounded-lg shadow-xl ">
+            <button
+              onClick={onClickFacebookSignUp}
+              className="w-full flex items-center justify-center gap-8 border border-slate-400 px-7 py-2 md:w-1/2  md:gap-4 rounded-lg shadow-xl "
+            >
               <img src={Facebook} alt="img/google" className="w-10 h-10" />
               Facebook
             </button>

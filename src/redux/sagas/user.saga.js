@@ -8,11 +8,12 @@ import {
 import {
   auth,
   db,
+  facebookProvider,
   getIsUserAuthenticated,
   googleProvider,
 } from "../../firebase/firebase";
 
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export function* fetchEmailSignUp({ payload: { email, password } }) {
   try {
@@ -54,33 +55,53 @@ export function* fetchEmailSignIn({ payload: { email, password } }) {
   }
 }
 
-export function* fetchGoogleSignUp() {
-  try {
-    const userCredential = yield call(signInWithPopup, auth, googleProvider);
-    const userAuth = yield userCredential.user.uid;
-    const email = yield userCredential.user.email;
-    const userObj = { email, userAuth, watchlist: [] };
-    const createDoc = yield call(doc, db, "userList", userAuth);
-    yield call(setDoc, createDoc, userObj);
-    yield put({
-      type: "user/setGoogleSignUpSuccess",
-      payload: { userCredential, userAuth },
-    });
-  } catch (error) {
-    yield put({ type: "user/setGoogleSignUpFailed", payload: error });
-  }
-}
-
 export function* fetchGoogleSignIn() {
   try {
     const userCredential = yield call(signInWithPopup, auth, googleProvider);
     const userAuth = yield userCredential.user.uid;
+    const email = yield userCredential.user.email;
+    const createDoc = yield call(doc, db, "userList", userAuth);
+    const docSnap = yield call(getDoc, createDoc);
+    if (docSnap.exists()) {
+      console.log("doc snap exists");
+    } else {
+      console.log("it doesnt exist");
+      const userObj = { email, userAuth, watchlist: [] };
+      yield call(setDoc, createDoc, userObj);
+    }
     yield put({
       type: "user/setGoogleSignInSuccess",
       payload: { userCredential, userAuth },
     });
   } catch (error) {
     yield put({ type: "user/setGoogleSignInFailed", payload: error });
+  }
+}
+
+//facebook authentication
+
+export function* fetchFacebookSignIn() {
+  try {
+    const userCredential = yield call(signInWithPopup, auth, facebookProvider);
+    const userAuth = yield userCredential.user.uid;
+    const email = yield userCredential.user.email;
+    const createDoc = yield call(doc, db, "userList", userAuth);
+    const docSnap = yield call(getDoc, createDoc);
+
+    if (docSnap.exists()) {
+      console.log("doc snap exists");
+    } else {
+      console.log("it doesnt exist");
+      const userObj = { email, userAuth, watchlist: [] };
+      yield call(setDoc, createDoc, userObj);
+    }
+
+    yield put({
+      type: "user/setFacebookSignInSuccess",
+      payload: { userCredential, userAuth },
+    });
+  } catch (error) {
+    yield put({ type: "user/setFacebookSignInFailed", payload: error });
   }
 }
 
@@ -128,12 +149,12 @@ export function* onSetEmailSignInStart() {
   yield takeLatest("user/setEmailSignInStart", fetchEmailSignIn);
 }
 
-export function* onSetGoogleSignUp() {
-  yield takeLatest("user/setGoogleSignUpStart", fetchGoogleSignUp);
-}
-
 export function* onSetGoogleSignIn() {
   yield takeLatest("user/setGoogleSignInStart", fetchGoogleSignIn);
+}
+
+export function* onSetFacebookSignIn() {
+  yield takeLatest("user/setFacebookSignInStart", fetchFacebookSignIn);
 }
 
 export function* onSetSignOutStart() {
@@ -153,7 +174,7 @@ export function* userSagas() {
     call(onSetEmailSignInStart),
     call(onSetSignOutStart),
     call(onCheckAuthStateChangeStart),
-    call(onSetGoogleSignUp),
     call(onSetGoogleSignIn),
+    call(onSetFacebookSignIn),
   ]);
 }

@@ -8,6 +8,7 @@ import {
   selectUserCredentials,
   selectUserError,
   setEmailSignInStart,
+  setFacebookSignInStart,
   setGoogleSignInStart,
 } from "../redux/reducers/user.reducer";
 
@@ -44,7 +45,14 @@ const SignIn = () => {
     dispatch(setGoogleSignInStart());
   };
 
-  if (errorCode === "auth/email-already-in-use") {
+  const onClickFacebookSignIn = () => {
+    dispatch(setFacebookSignInStart());
+  };
+
+  if (
+    errorCode === "auth/email-already-in-use" ||
+    errorCode === "auth/account-exists-with-different-credential"
+  ) {
     error = "*Email already in use";
   } else if (errorCode === "auth/password-not-same") {
     error = "*Password not same";
@@ -118,7 +126,10 @@ const SignIn = () => {
               <img src={Google} alt="img/google" className="w-10 h-10" />
               Google
             </button>
-            <button className="w-full flex items-center justify-center gap-8 border border-slate-400 px-7 py-2 md:w-1/2  md:gap-4 rounded-lg shadow-xl ">
+            <button
+              onClick={onClickFacebookSignIn}
+              className="w-full flex items-center justify-center gap-8 border border-slate-400 px-7 py-2 md:w-1/2  md:gap-4 rounded-lg shadow-xl "
+            >
               <img src={Facebook} alt="img/google" className="w-12 h-12" />
               Facebook
             </button>
