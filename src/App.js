@@ -7,18 +7,22 @@ import { Account, CoinPage, Home, SignIn, SignUp } from "./routes";
 
 import { selectTheme, setTheme } from "./redux/reducers/themes.reducer";
 import { getInitialTheme } from "./utils/themes";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import {
   selectCoinsList,
   setCoinListStart,
 } from "./redux/reducers/coins.reducer";
-import { checkAuthStateChangeStart } from "./redux/reducers/user.reducer";
+import {
+  checkAuthStateChangeStart,
+  selectUserCredentials,
+} from "./redux/reducers/user.reducer";
 
 function App() {
   const dispatch = useDispatch();
   const getTheme = useSelector(selectTheme);
   const isTheme = getTheme ? getTheme : getInitialTheme();
   const getCoins = useSelector(selectCoinsList);
+  const userCredential = useSelector(selectUserCredentials);
 
   useEffect(() => {
     dispatch(setTheme(isTheme));
@@ -36,10 +40,11 @@ function App() {
         <Route path="/" element={<Home coins={getCoins} />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/account" element={<Account />} />
+        {userCredential ? <Route path="/account" element={<Account />} /> : ""}
         <Route path="/coin/:coinId" element={<CoinPage />}>
           <Route path=":coinId" />
         </Route>
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <Footer />
     </Fragment>

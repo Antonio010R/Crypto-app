@@ -13,7 +13,14 @@ import {
   googleProvider,
 } from "../../firebase/firebase";
 
-import { doc, getDoc, setDoc, arrayUnion, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  arrayUnion,
+  updateDoc,
+  arrayRemove,
+} from "firebase/firestore";
 
 //Function generator for sign up with email and password
 
@@ -66,6 +73,7 @@ export function* fetchEmailSignIn({ payload: { email, password } }) {
 export function* fetchGoogleSignIn() {
   try {
     const userCredential = yield call(signInWithPopup, auth, googleProvider);
+    yield console.log(userCredential);
     const userAuth = yield userCredential.user.uid;
     const email = yield userCredential.user.email;
     const createDoc = yield call(doc, db, "userList", userAuth);
@@ -75,7 +83,7 @@ export function* fetchGoogleSignIn() {
       const watchList = yield docSnap.data().watchlist;
       yield put({
         type: "user/setGoogleSignInSuccess",
-        payload: { userCredential, userAuth, watchList },
+        payload: { userCredential: userCredential.user, userAuth, watchList },
       });
     } else {
       console.log("it doesnt exist");
@@ -148,7 +156,6 @@ export function* fetchCheckAuthStateChangeStart() {
     // });
     const userCredential = yield call(getIsUserAuthenticated);
     const userAuth = yield userCredential.uid || userCredential.user.uid;
-
     const docRef = yield call(doc, db, "userList", userAuth);
     const docSnap = yield call(getDoc, docRef, userAuth);
     const watchList = yield docSnap.data().watchlist;
@@ -190,6 +197,35 @@ export function* addCoinToListStart({ payload }) {
   }
 }
 
+//function generator to remove coin from watchlist in Firetore
+
+export function* removeCoinFromListStart({ payload }) {
+  try {
+    const userCredential = yield select((state) => state.user.userCredential);
+    if (userCredential) {
+      const userAuth = yield userCredential.uid || userCredential.user.uid;
+      const docRef = yield call(doc, db, "userList", userAuth);
+
+      yield call(updateDoc, docRef, {
+        watchlist: yield call(arrayRemove, payload),
+      });
+      const docSnap = yield call(getDoc, docRef);
+      const watchList = yield docSnap.data().watchlist;
+      yield put({
+        type: "user/setRemoveCoinFromListSuccess",
+        payload: watchList,
+      });
+    } else {
+      throw new Error("User not signed in");
+    }
+  } catch (error) {
+    yield put({
+      type: "user/setRemoveCoinFromListFailed",
+      payload: error,
+    });
+  }
+}
+
 export function* onSetEmailSignUpStart() {
   yield takeLatest("user/setEmailSignUpStart", fetchEmailSignUp);
 }
@@ -220,6 +256,9 @@ export function* onCheckAuthStateChangeStart() {
 export function* onSetAddCoinToList() {
   yield takeLatest("user/setAddCoinToListStart", addCoinToListStart);
 }
+export function* onSetRemoveCoinFromList() {
+  yield takeLatest("user/setRemoveCoinFromListStart", removeCoinFromListStart);
+}
 
 export function* userSagas() {
   yield all([
@@ -230,5 +269,6 @@ export function* userSagas() {
     call(onSetGoogleSignIn),
     call(onSetFacebookSignIn),
     call(onSetAddCoinToList),
+    call(onSetRemoveCoinFromList),
   ]);
 }

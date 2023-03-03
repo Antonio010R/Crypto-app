@@ -1,15 +1,19 @@
-import React, { useState } from "react";
-import { AiOutlineStar } from "react-icons/ai";
+import React, { useState, useEffect } from "react";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { Sparklines, SparklinesLine } from "react-sparklines";
 import { Link } from "react-router-dom";
-import { db } from "../firebase/firebase";
-// import { arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { useDispatch } from "react-redux";
-import { setAddCoinToListStart } from "../redux/reducers/user.reducer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectUserCredentials,
+  setAddCoinToListStart,
+  setRemoveCoinFromListStart,
+} from "../redux/reducers/user.reducer";
 
-const CoinItem = ({ coin }) => {
+const CoinItem = ({ coin, watchList }) => {
   const dispatch = useDispatch();
-  const [savedCoin, setSavedCoin] = useState({});
+  const [saved, setSaved] = useState(false);
+  const userCredential = useSelector(selectUserCredentials);
+
   const {
     id,
     symbol,
@@ -23,9 +27,39 @@ const CoinItem = ({ coin }) => {
     sparkline_in_7d,
   } = coin;
 
-  const onClickHandler = () => {
+  useEffect(() => {
+    if (userCredential) {
+      watchList?.map((savedCoin) => {
+        if (savedCoin.id === id) {
+          setSaved(true);
+        }
+        return true;
+      });
+    } else {
+      setSaved(false);
+    }
+  }, [watchList, userCredential]);
+
+  const onClickHandlerAddCoin = () => {
+    if (userCredential) {
+      dispatch(
+        setAddCoinToListStart({
+          id,
+          name,
+          image,
+          rank: coin.market_cap_rank,
+          symbol,
+        })
+      );
+      setSaved(true);
+    } else {
+      alert("Sign in create shortlist");
+    }
+  };
+
+  const onClickHandlerRemoveCoin = () => {
     dispatch(
-      setAddCoinToListStart({
+      setRemoveCoinFromListStart({
         id,
         name,
         image,
@@ -33,12 +67,20 @@ const CoinItem = ({ coin }) => {
         symbol,
       })
     );
+    setSaved(false);
   };
   return (
     <tr className="h-[82px] overflow-hidden border-b">
-      <td onClick={onClickHandler}>
-        <AiOutlineStar />
-      </td>
+      {saved ? (
+        <td onClick={onClickHandlerRemoveCoin}>
+          <AiFillStar className="text-yellow-500" />
+        </td>
+      ) : (
+        <td onClick={onClickHandlerAddCoin}>
+          <AiOutlineStar />
+        </td>
+      )}
+
       <td>{market_cap_rank}</td>
       <td>
         <Link to={`/coin/${id}`}>

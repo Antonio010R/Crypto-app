@@ -6,15 +6,13 @@ import { selectUserWatchList } from "../redux/reducers/user.reducer";
 
 const CoinSearch = ({ coins }) => {
   const [search, setSearch] = useState("");
-  // const watchList = useSelector(selectUserWatchList);
+  const watchList = useSelector(selectUserWatchList);
 
   const onChangeHandler = (e) => {
     setTimeout(() => setSearch(e.target.value), 1500);
   };
-
   return (
     <div className="rounded-div my-4">
-      {/* {console.log(coins)} */}
       <div className="flex flex-col justify-between pt-4 pb-6 text-center md:text-right md:flex-row ">
         <h1 className="text-2xl my-2 font-bold ">Search Crypto</h1>
         <form>
@@ -56,7 +54,7 @@ const CoinSearch = ({ coins }) => {
               return false;
             })
             .map((coin) => (
-              <CoinItem key={coin.id} coin={coin} />
+              <CoinItem key={coin.id} coin={coin} watchList={watchList} />
             ))}
         </tbody>
       </table>

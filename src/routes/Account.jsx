@@ -10,6 +10,7 @@ import { Navigate } from "react-router";
 const Account = () => {
   const dispatch = useDispatch();
   const userCredential = useSelector(selectUserCredentials);
+
   const onClickSignOutHandler = () => {
     dispatch(setSignOutStart());
   };
@@ -18,15 +19,16 @@ const Account = () => {
   }
   return (
     <div className="max-w-[1440px] mx-auto">
+      {console.log(userCredential)}
       <div className="rounded-div flex justify-between items-center my-12 py-8">
         <div>
           <h1 className="text-2xl font-bold">Account</h1>
           <div>
             <p>
               Welcome,{" "}
-              {userCredential?.user?.displayName
-                ? userCredential?.user?.displayName
-                : userCredential?.user?.email}
+              {!userCredential?.displayName
+                ? userCredential?.user?.email
+                : userCredential?.displayName}
             </p>
           </div>
         </div>

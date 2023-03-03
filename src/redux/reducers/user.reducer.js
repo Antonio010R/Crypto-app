@@ -145,6 +145,15 @@ const userSlice = createSlice({
     setAddCoinToListFailed: (state, action) => {
       state.error = action.payload;
     },
+    setRemoveCoinFromListStart: (state, action) => {
+      state.watchList = null;
+    },
+    setRemoveCoinFromListSuccess: (state, action) => {
+      state.watchList = action.payload;
+    },
+    setRemoveCoinFromListFailed: (state, action) => {
+      state.error = action.payload;
+    },
   },
 });
 
@@ -168,6 +177,11 @@ export const {
   checkAuthStateChangeSuccess,
   checkAuthStateChangeFailed,
   setAddCoinToListStart,
+  setAddCoinToListSuccess,
+  setAddCoinToListFailed,
+  setRemoveCoinFromListStart,
+  setRemoveCoinFromListSuccess,
+  setRemoveCoinFromListFailed,
 } = userSlice.actions;
 
 export const selectUserCredentials = (state) => state.user.userCredential;
