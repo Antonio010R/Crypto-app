@@ -1,4 +1,4 @@
-import { takeLatest, all, call, put } from "redux-saga/effects";
+import { takeLatest, select, all, call, put } from "redux-saga/effects";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -13,7 +13,9 @@ import {
   googleProvider,
 } from "../../firebase/firebase";
 
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, arrayUnion, updateDoc } from "firebase/firestore";
+
+//Function generator for sign up with email and password
 
 export function* fetchEmailSignUp({ payload: { email, password } }) {
   try {
@@ -27,7 +29,6 @@ export function* fetchEmailSignUp({ payload: { email, password } }) {
     const userObj = yield { email, password, userAuth, watchlist: [] };
     const createDoc = yield call(doc, db, "userList", userAuth);
     yield call(setDoc, createDoc, userObj);
-    console.log(userCredential.user.uid);
     yield put({
       type: "user/setEmailSignUpSuccess",
       payload: { userAuth, userCredential },
@@ -37,6 +38,8 @@ export function* fetchEmailSignUp({ payload: { email, password } }) {
   }
 }
 
+//Function generator for sign in with email and password
+
 export function* fetchEmailSignIn({ payload: { email, password } }) {
   try {
     const userCredential = yield call(
@@ -45,15 +48,20 @@ export function* fetchEmailSignIn({ payload: { email, password } }) {
       email,
       password
     );
-    console.log(userCredential);
+    const userAuth = yield userCredential.user.uid;
+    const docRef = yield call(doc, db, "userList", userAuth);
+    const docSnap = yield call(getDoc, docRef);
+    const watchList = yield docSnap.data().watchlist;
     yield put({
       type: "user/setEmailSignInSuccess",
-      payload: { userCredential, userAuth: userCredential.user.uid },
+      payload: { userCredential, userAuth: userCredential.user.uid, watchList },
     });
   } catch (error) {
     yield put({ type: "user/setEmailSignInFailed", payload: error });
   }
 }
+
+//Function generator for Google sign in
 
 export function* fetchGoogleSignIn() {
   try {
@@ -64,21 +72,26 @@ export function* fetchGoogleSignIn() {
     const docSnap = yield call(getDoc, createDoc);
     if (docSnap.exists()) {
       console.log("doc snap exists");
+      const watchList = yield docSnap.data().watchlist;
+      yield put({
+        type: "user/setGoogleSignInSuccess",
+        payload: { userCredential, userAuth, watchList },
+      });
     } else {
       console.log("it doesnt exist");
       const userObj = { email, userAuth, watchlist: [] };
       yield call(setDoc, createDoc, userObj);
+      yield put({
+        type: "user/setGoogleSignInSuccess",
+        payload: { userCredential, userAuth, watchList: [] },
+      });
     }
-    yield put({
-      type: "user/setGoogleSignInSuccess",
-      payload: { userCredential, userAuth },
-    });
   } catch (error) {
     yield put({ type: "user/setGoogleSignInFailed", payload: error });
   }
 }
 
-//facebook authentication
+//Function generator for Facebook sign in
 
 export function* fetchFacebookSignIn() {
   try {
@@ -90,24 +103,29 @@ export function* fetchFacebookSignIn() {
 
     if (docSnap.exists()) {
       console.log("doc snap exists");
+      const watchList = yield docSnap.data().watchlist;
+      yield put({
+        type: "user/setFacebookSignInSuccess",
+        payload: { userCredential, userAuth, watchList },
+      });
     } else {
       console.log("it doesnt exist");
       const userObj = { email, userAuth, watchlist: [] };
       yield call(setDoc, createDoc, userObj);
+      yield put({
+        type: "user/setFacebookSignInSuccess",
+        payload: { userCredential, userAuth, watchList: [] },
+      });
     }
-
-    yield put({
-      type: "user/setFacebookSignInSuccess",
-      payload: { userCredential, userAuth },
-    });
   } catch (error) {
     yield put({ type: "user/setFacebookSignInFailed", payload: error });
   }
 }
 
+//Function generator for  sign out
+
 export function* fetchSignOutStart() {
   try {
-    yield console.log("auth", auth);
     const userCredential = yield call(signOut, auth);
     console.log("userCredential ", userCredential);
     yield put({ type: "user/setSignOutSuccess" });
@@ -115,6 +133,8 @@ export function* fetchSignOutStart() {
     yield put({ type: "user/setSignOutFailed", payload: error });
   }
 }
+
+//function generator for onauthstatechanged
 
 export function* fetchCheckAuthStateChangeStart() {
   try {
@@ -127,16 +147,45 @@ export function* fetchCheckAuthStateChangeStart() {
     //   return null;
     // });
     const userCredential = yield call(getIsUserAuthenticated);
-    const userAuth = yield userCredential.uid;
-    console.log(userAuth);
+    const userAuth = yield userCredential.uid || userCredential.user.uid;
+
+    const docRef = yield call(doc, db, "userList", userAuth);
+    const docSnap = yield call(getDoc, docRef, userAuth);
+    const watchList = yield docSnap.data().watchlist;
+
     yield put({
       type: "user/checkAuthStateChangeSuccess",
-      payload: { userCredential, userAuth },
+      payload: { userCredential, userAuth, watchList },
     });
   } catch (error) {
     yield put({
       type: "user/checkAuthStateChangeFailed",
       payload: "No user signed in",
+    });
+  }
+}
+
+//function generator to add coin to watchlist in Firetore
+
+export function* addCoinToListStart({ payload }) {
+  try {
+    const userCredential = yield select((state) => state.user.userCredential);
+    if (userCredential) {
+      const userAuth = yield userCredential.uid || userCredential.user.uid;
+      const docRef = yield call(doc, db, "userList", userAuth);
+      yield call(updateDoc, docRef, {
+        watchlist: yield call(arrayUnion, payload),
+      });
+      const docSnap = yield call(getDoc, docRef);
+      const watchList = yield docSnap.data().watchlist;
+      yield put({ type: "user/setAddCoinToListSuccess", payload: watchList });
+    } else {
+      throw new Error("User not signed in");
+    }
+  } catch (error) {
+    yield put({
+      type: "user/setAddCoinToListFailed",
+      payload: error,
     });
   }
 }
@@ -168,6 +217,10 @@ export function* onCheckAuthStateChangeStart() {
   );
 }
 
+export function* onSetAddCoinToList() {
+  yield takeLatest("user/setAddCoinToListStart", addCoinToListStart);
+}
+
 export function* userSagas() {
   yield all([
     call(onSetEmailSignUpStart),
@@ -176,5 +229,6 @@ export function* userSagas() {
     call(onCheckAuthStateChangeStart),
     call(onSetGoogleSignIn),
     call(onSetFacebookSignIn),
+    call(onSetAddCoinToList),
   ]);
 }

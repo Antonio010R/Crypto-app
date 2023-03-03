@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineStar } from "react-icons/ai";
 import { Sparklines, SparklinesLine } from "react-sparklines";
 import { Link } from "react-router-dom";
+import { db } from "../firebase/firebase";
+// import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { setAddCoinToListStart } from "../redux/reducers/user.reducer";
 
 const CoinItem = ({ coin }) => {
+  const dispatch = useDispatch();
+  const [savedCoin, setSavedCoin] = useState({});
   const {
     id,
     symbol,
@@ -16,9 +22,21 @@ const CoinItem = ({ coin }) => {
     total_volume,
     sparkline_in_7d,
   } = coin;
+
+  const onClickHandler = () => {
+    dispatch(
+      setAddCoinToListStart({
+        id,
+        name,
+        image,
+        rank: coin.market_cap_rank,
+        symbol,
+      })
+    );
+  };
   return (
     <tr className="h-[82px] overflow-hidden border-b">
-      <td>
+      <td onClick={onClickHandler}>
         <AiOutlineStar />
       </td>
       <td>{market_cap_rank}</td>

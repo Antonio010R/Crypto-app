@@ -5,6 +5,7 @@ const initialState = {
   userAuth: null,
   isLoading: false,
   error: null,
+  watchList: [],
 };
 
 const userSlice = createSlice({
@@ -18,18 +19,21 @@ const userSlice = createSlice({
       state.isLoading = true;
       state.error = null;
       state.userAuth = null;
+      state.watchList = [];
     },
     setEmailSignUpSuccess: (state, action) => {
       state.userCredential = action.payload.userCredential;
       state.userAuth = action.payload.userAuth;
       state.isLoading = false;
       state.error = null;
+      state.watchList = [];
     },
     setEmailSignUpFailed: (state, action) => {
       state.userCredential = null;
       state.userAuth = null;
       state.isLoading = false;
       state.error = action.payload;
+      state.watchList = [];
     },
 
     //sign in with email and password
@@ -39,18 +43,18 @@ const userSlice = createSlice({
       state.error = null;
       state.userAuth = null;
       state.userCredential = null;
+      state.watchList = [];
     },
     setEmailSignInSuccess: (state, action) => {
       state.isLoading = false;
       state.error = null;
       state.userAuth = action.payload.userAuth;
       state.userCredential = action.payload.userCredential;
+      state.watchList = action.payload.watchList;
     },
     setEmailSignInFailed: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
-      state.userAuth = null;
-      state.userCredential = null;
     },
 
     //google sign in
@@ -59,18 +63,18 @@ const userSlice = createSlice({
       state.error = null;
       state.userAuth = null;
       state.userCredential = null;
+      state.watchList = [];
     },
     setGoogleSignInSuccess: (state, action) => {
       state.isLoading = false;
       state.error = null;
       state.userAuth = action.payload.userAuth;
       state.userCredential = action.payload.userCredential;
+      state.watchList = action.payload.watchList;
     },
     setGoogleSignInFailed: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
-      state.userAuth = null;
-      state.userCredential = null;
     },
 
     //facebook sign in
@@ -79,38 +83,35 @@ const userSlice = createSlice({
       state.error = null;
       state.userAuth = null;
       state.userCredential = null;
+      state.watchList = [];
     },
     setFacebookSignInSuccess: (state, action) => {
       state.isLoading = false;
       state.error = null;
       state.userAuth = action.payload.userAuth;
       state.userCredential = action.payload.userCredential;
+      state.watchList = action.payload.watchList;
     },
     setFacebookSignInFailed: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
-      state.userAuth = null;
-      state.userCredential = null;
     },
     //sign out
 
     setSignOutStart: (state, action) => {
       state.isLoading = true;
       state.error = null;
-      state.userAuth = null;
-      state.userCredential = null;
     },
     setSignOutSuccess: (state, action) => {
       state.isLoading = false;
       state.error = null;
       state.userAuth = null;
       state.userCredential = null;
+      state.watchList = [];
     },
     setSignOutFailed: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
-      state.userAuth = null;
-      state.userCredential = null;
     },
 
     //getting current user logged in
@@ -120,18 +121,29 @@ const userSlice = createSlice({
       state.error = null;
       state.userAuth = null;
       state.userCredential = null;
+      state.watchList = [];
     },
     checkAuthStateChangeSuccess: (state, action) => {
       state.isLoading = false;
       state.error = null;
       state.userAuth = action.payload.userAuth;
       state.userCredential = action.payload.userCredential;
+      state.watchList = action.payload.watchList;
     },
     checkAuthStateChangeFailed: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
-      state.userAuth = null;
-      state.userCredential = null;
+    },
+
+    //adding coin to watchlist
+    setAddCoinToListStart: (state, action) => {
+      state.watchList = null;
+    },
+    setAddCoinToListSuccess: (state, action) => {
+      state.watchList = action.payload;
+    },
+    setAddCoinToListFailed: (state, action) => {
+      state.error = action.payload;
     },
   },
 });
@@ -155,11 +167,13 @@ export const {
   checkAuthStateChangeStart,
   checkAuthStateChangeSuccess,
   checkAuthStateChangeFailed,
+  setAddCoinToListStart,
 } = userSlice.actions;
 
 export const selectUserCredentials = (state) => state.user.userCredential;
 export const selectUserAuth = (state) => state.user.userAuth;
 export const selectUserIsLoading = (state) => state.user.isLoading;
 export const selectUserError = (state) => state.user.error;
+export const selectUserWatchList = (state) => state.user.watchList;
 
 export default userSlice.reducer;

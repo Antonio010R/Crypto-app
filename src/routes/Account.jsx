@@ -13,7 +13,6 @@ const Account = () => {
   const onClickSignOutHandler = () => {
     dispatch(setSignOutStart());
   };
-  console.log(userCredential);
   if (!userCredential) {
     return <Navigate to="/" />;
   }

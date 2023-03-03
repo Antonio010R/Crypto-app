@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import {
   AiFillEye,
@@ -77,7 +77,10 @@ const SignUp = () => {
     error = "*Password not same";
   } else if (errorCode === "auth/weak-password") {
     error = "*Password is weak";
-  } else if (errorCode === "auth/no-email-pwd") {
+  } else if (
+    errorCode === "auth/no-email-pwd-repwd" ||
+    errorCode === "auth/no-email-pwd"
+  ) {
     error = "*Enter the details";
   } else if (errorCode === "auth/no-email") {
     error = "*Enter email";
@@ -91,8 +94,12 @@ const SignUp = () => {
 
   console.log(errorCode);
 
+  useEffect(() => {
+    dispatch(setEmailSignUpFailed(null));
+  }, []);
+
   if (userCredential) {
-    return <Navigate to="/" />;
+    return <Navigate to="/account" />;
   } else {
     return (
       <div className="flex flex-col max-w-[400px] mx-auto min-h-[600px] px-4 py-12">

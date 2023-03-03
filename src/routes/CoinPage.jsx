@@ -16,7 +16,6 @@ const CoinPage = () => {
   const getCoinDetails = useSelector(selectCoinDetails);
   const isLoading = useSelector(selectCoinsIsLoading);
   const param = useParams();
-  console.log(param);
 
   useEffect(() => {
     dispatch(setCoinDetailsStart(param.coinId));

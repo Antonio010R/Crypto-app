@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible, AiOutlineMail } from "react-icons/ai";
 import Google from "../assets/google.png";
@@ -65,10 +65,12 @@ const SignIn = () => {
     error = "*User does not exist";
   }
 
-  console.log(errorCode);
+  useEffect(() => {
+    dispatch(setEmailSignUpFailed(null));
+  }, []);
 
   if (userCredential) {
-    return <Navigate to="/" />;
+    return <Navigate to="/account" />;
   } else {
     return (
       <div className="flex flex-col max-w-[400px] mx-auto min-h-[600px] px-4 py-12">

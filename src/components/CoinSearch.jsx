@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 
 import CoinItem from "./CoinItem";
+import { useSelector } from "react-redux";
+import { selectUserWatchList } from "../redux/reducers/user.reducer";
 
 const CoinSearch = ({ coins }) => {
   const [search, setSearch] = useState("");
+  // const watchList = useSelector(selectUserWatchList);
 
   const onChangeHandler = (e) => {
-    setSearch(e.target.value);
+    setTimeout(() => setSearch(e.target.value), 1500);
   };
 
   return (
